@@ -30,5 +30,5 @@ JARVIS MARK 7B
 https://mark-k17-c.netlify.app/
 JARVIS MARK 85C
 
-https://mark-17-d.netlify.app/
+https://mark-k17-d.netlify.app/
 JARVIS MARK 17D
