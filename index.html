@@ -1,0 +1,3572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>J.A.R.V.I.S. - Mark XLVII</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@300;400;500;600;700;800;900&family=Exo+2:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ====== CSS Variables ====== */
+        :root {
+            --arc-reactor: #00f3ff;
+            --iron-gold: #ffd700;
+            --iron-red: #ff003c;
+            --suit-blue: #0066ff;
+            --hud-green: #00ff88;
+            --hud-orange: #ff9900;
+            --hud-purple: #b026ff;
+            --dark-bg: #0a0a1a;
+            --panel-bg: rgba(10, 14, 30, 0.95);
+            --glass-effect: rgba(0, 243, 255, 0.05);
+            --neon-glow: 0 0 20px rgba(0, 243, 255, 0.5),
+                         0 0 40px rgba(0, 243, 255, 0.3),
+                         0 0 60px rgba(0, 243, 255, 0.1);
+            --text-glow: 0 0 10px rgba(0, 243, 255, 0.7);
+            --grid-color: rgba(0, 243, 255, 0.1);
+            --border-color: rgba(0, 243, 255, 0.2);
+        }
+
+        /* ====== Base Reset ====== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Exo 2', sans-serif;
+            background: var(--dark-bg);
+            color: #ffffff;
+            overflow-x: hidden;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* ====== Nanotech Grid Background ====== */
+        .nanotech-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(10, 14, 30, 0.9) 0%, rgba(5, 7, 15, 0.95) 100%),
+                linear-gradient(45deg, transparent 49%, var(--grid-color) 49%, var(--grid-color) 51%, transparent 51%),
+                linear-gradient(-45deg, transparent 49%, var(--grid-color) 49%, var(--grid-color) 51%, transparent 51%);
+            background-size: cover, 60px 60px, 60px 60px;
+            z-index: -5;
+            animation: gridFlow 20s linear infinite;
+        }
+
+        @keyframes gridFlow {
+            0% { background-position: 0 0, 0 0, 0 0; }
+            100% { background-position: 0 0, 60px 60px, 60px 60px; }
+        }
+
+        /* ====== Energy Fields ====== */
+        .energy-field {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.3;
+            z-index: -4;
+        }
+
+        .field-1 {
+            width: 600px;
+            height: 600px;
+            background: var(--arc-reactor);
+            top: -200px;
+            left: -200px;
+            animation: pulseField 8s ease-in-out infinite;
+        }
+
+        .field-2 {
+            width: 400px;
+            height: 400px;
+            background: var(--iron-red);
+            bottom: -100px;
+            right: -100px;
+            animation: pulseField 12s ease-in-out infinite reverse;
+        }
+
+        .field-3 {
+            width: 300px;
+            height: 300px;
+            background: var(--suit-blue);
+            top: 50%;
+            left: 80%;
+            animation: pulseField 15s ease-in-out infinite;
+        }
+
+        @keyframes pulseField {
+            0%, 100% { opacity: 0.1; transform: scale(1); }
+            50% { opacity: 0.3; transform: scale(1.1); }
+        }
+
+        /* ====== Laser Grid ====== */
+        .laser-grid {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(0, 243, 255, 0.03) 1px, rgba(0, 243, 255, 0.03) 2px),
+                repeating-linear-gradient(90deg, transparent, transparent 1px, rgba(0, 102, 255, 0.03) 1px, rgba(0, 102, 255, 0.03) 2px);
+            z-index: -3;
+            pointer-events: none;
+        }
+
+        /* ====== Main Container ====== */
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ====== ARC Reactor Header ====== */
+        .arc-header {
+            text-align: center;
+            margin-bottom: 60px;
+            padding: 40px 20px;
+            position: relative;
+        }
+
+        .arc-reactor-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 30px;
+        }
+
+        .arc-reactor {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 120px;
+            height: 120px;
+            background: radial-gradient(circle, var(--arc-reactor) 0%, transparent 70%);
+            border-radius: 50%;
+            box-shadow: 0 0 100px var(--arc-reactor),
+                        0 0 200px var(--arc-reactor),
+                        0 0 300px var(--arc-reactor);
+            animation: arcPulse 2s ease-in-out infinite;
+        }
+
+        .arc-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 2px solid var(--arc-reactor);
+            border-radius: 50%;
+            opacity: 0.5;
+        }
+
+        .arc-ring-1 {
+            width: 180px;
+            height: 180px;
+            animation: arcRotate 20s linear infinite;
+        }
+
+        .arc-ring-2 {
+            width: 160px;
+            height: 160px;
+            animation: arcRotate 15s linear infinite reverse;
+        }
+
+        .arc-ring-3 {
+            width: 140px;
+            height: 140px;
+            animation: arcRotate 10s linear infinite;
+        }
+
+        .arc-particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .arc-particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--arc-reactor);
+            border-radius: 50%;
+            animation: arcOrbit 3s linear infinite;
+        }
+
+        @keyframes arcPulse {
+            0%, 100% { opacity: 0.7; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 1; transform: translate(-50%, -50%) scale(1.05); }
+        }
+
+        @keyframes arcRotate {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        @keyframes arcOrbit {
+            0% { transform: rotate(0deg) translateX(90px) rotate(0deg); opacity: 1; }
+            100% { transform: rotate(360deg) translateX(90px) rotate(-360deg); opacity: 0; }
+        }
+
+        .jarvis-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 5rem;
+            font-weight: 900;
+            color: var(--arc-reactor);
+            text-transform: uppercase;
+            letter-spacing: 8px;
+            margin-bottom: 10px;
+            text-shadow: var(--neon-glow);
+            position: relative;
+        }
+
+        .jarvis-title::before {
+            content: 'J.A.R.V.I.S.';
+            position: absolute;
+            left: 0;
+            color: transparent;
+            background: linear-gradient(90deg, var(--iron-red), var(--iron-gold), var(--arc-reactor));
+            -webkit-background-clip: text;
+            background-clip: text;
+            z-index: -1;
+            filter: blur(15px);
+            opacity: 0.7;
+        }
+
+        .jarvis-subtitle {
+            font-family: 'Exo 2', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.8);
+            letter-spacing: 4px;
+            margin-bottom: 30px;
+        }
+
+        .mark-version {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            color: var(--iron-gold);
+            letter-spacing: 3px;
+            padding: 10px 30px;
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 30px;
+            display: inline-block;
+        }
+
+        /* ====== Navigation HUD ====== */
+        .nav-hud {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .nav-button {
+            padding: 15px 30px;
+            background: rgba(0, 243, 255, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-color);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 200px;
+            justify-content: center;
+        }
+
+        .nav-button:hover {
+            background: rgba(0, 243, 255, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 243, 255, 0.2);
+        }
+
+        .nav-button.active {
+            background: rgba(0, 243, 255, 0.15);
+            border-color: var(--arc-reactor);
+            color: var(--arc-reactor);
+        }
+
+        .nav-button.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--arc-reactor);
+            animation: scanLine 2s linear infinite;
+        }
+
+        @keyframes scanLine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* ====== Main Interface Sections ====== */
+        .interface-section {
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .interface-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ====== ASSISTANT Section ====== */
+        .assistant-interface {
+            display: grid;
+            grid-template-columns: 300px 1fr 350px;
+            gap: 30px;
+        }
+
+        /* Suit Status Panel */
+        .suit-status {
+            background: var(--panel-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            padding: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .suit-status::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--iron-red), var(--iron-gold), var(--arc-reactor));
+        }
+
+        .suit-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.3rem;
+            color: var(--arc-reactor);
+            margin-bottom: 25px;
+            letter-spacing: 3px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .suit-title i {
+            color: var(--iron-gold);
+        }
+
+        .status-grid {
+            display: grid;
+            gap: 20px;
+        }
+
+        .status-item {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            border: 1px solid rgba(0, 243, 255, 0.1);
+        }
+
+        .status-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .status-label {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+            letter-spacing: 1px;
+        }
+
+        .status-value {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 600;
+            color: var(--arc-reactor);
+        }
+
+        .status-bar {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .status-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--iron-red), var(--arc-reactor));
+            border-radius: 3px;
+            position: relative;
+        }
+
+        .status-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: shine 2s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* Chat Interface */
+        .chat-interface {
+            background: var(--panel-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            padding: 25px;
+            background: rgba(0, 0, 0, 0.3);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .chat-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            color: var(--arc-reactor);
+            letter-spacing: 3px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .chat-title i {
+            color: var(--iron-gold);
+            font-size: 1.8rem;
+        }
+
+        .chat-display {
+            flex: 1;
+            padding: 25px;
+            overflow-y: auto;
+            max-height: 500px;
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .message {
+            margin-bottom: 20px;
+            animation: messageSlide 0.3s ease-out;
+        }
+
+        .message.user {
+            text-align: right;
+        }
+
+        .message-content {
+            display: inline-block;
+            padding: 15px 20px;
+            border-radius: 15px;
+            max-width: 70%;
+            position: relative;
+        }
+
+        .message.jarvis .message-content {
+            background: linear-gradient(135deg, rgba(0, 243, 255, 0.1), rgba(0, 102, 255, 0.1));
+            border: 1px solid rgba(0, 243, 255, 0.3);
+            border-radius: 15px 15px 15px 5px;
+        }
+
+        .message.user .message-content {
+            background: linear-gradient(135deg, rgba(255, 0, 60, 0.1), rgba(255, 215, 0, 0.1));
+            border: 1px solid rgba(255, 0, 60, 0.3);
+            border-radius: 15px 15px 5px 15px;
+        }
+
+        .message-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .message-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 0.8rem;
+        }
+
+        .message.jarvis .message-avatar {
+            background: linear-gradient(135deg, var(--arc-reactor), var(--suit-blue));
+            color: var(--dark-bg);
+        }
+
+        .message.user .message-avatar {
+            background: linear-gradient(135deg, var(--iron-red), var(--iron-gold));
+            color: white;
+        }
+
+        .message-sender {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .message.jarvis .message-sender {
+            color: var(--arc-reactor);
+        }
+
+        .message.user .message-sender {
+            color: var(--iron-red);
+        }
+
+        .message-time {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.5);
+            margin-left: auto;
+        }
+
+        .message-text {
+            line-height: 1.6;
+        }
+
+        .typing-indicator {
+            display: inline-block;
+        }
+
+        .typing-indicator::after {
+            content: '...';
+            animation: typing 1.5s infinite;
+        }
+
+        @keyframes typing {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60%, 100% { content: '...'; }
+        }
+
+        @keyframes messageSlide {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .chat-input {
+            padding: 25px;
+            background: rgba(0, 0, 0, 0.3);
+            border-top: 1px solid var(--border-color);
+        }
+
+        .input-wrapper {
+            display: flex;
+            gap: 15px;
+            align-items: stretch;
+        }
+
+        #message-input {
+            flex: 1;
+            padding: 15px 20px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid rgba(0, 243, 255, 0.3);
+            border-radius: 10px;
+            color: white;
+            font-family: 'Exo 2', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        #message-input:focus {
+            outline: none;
+            border-color: var(--arc-reactor);
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
+        }
+
+        #message-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+            letter-spacing: 1px;
+        }
+
+        .input-buttons {
+            display: flex;
+            gap: 10px;
+            flex-direction: column;
+            min-width: 150px;
+        }
+
+        .input-btn {
+            padding: 12px 20px;
+            background: rgba(0, 243, 255, 0.1);
+            border: 1px solid rgba(0, 243, 255, 0.3);
+            border-radius: 10px;
+            color: white;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            flex: 1;
+        }
+
+        .input-btn:hover {
+            background: rgba(0, 243, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 243, 255, 0.2);
+        }
+
+        .input-btn.send {
+            background: linear-gradient(135deg, var(--arc-reactor), var(--suit-blue));
+            color: var(--dark-bg);
+            font-weight: 600;
+        }
+
+        .input-btn.voice {
+            background: linear-gradient(135deg, var(--iron-red), var(--iron-gold));
+        }
+
+        .input-btn.image {
+            background: linear-gradient(135deg, var(--hud-purple), var(--suit-blue));
+        }
+
+        /* AI Control Panel with API Keys */
+        .ai-controls {
+            background: var(--panel-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            padding: 25px;
+            overflow-y: auto;
+            max-height: 600px;
+        }
+
+        .controls-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.3rem;
+            color: var(--arc-reactor);
+            margin-bottom: 25px;
+            letter-spacing: 3px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .controls-title i {
+            color: var(--iron-gold);
+        }
+
+        .ai-cores {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .core-selector {
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(0, 243, 255, 0.2);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .core-selector:hover {
+            background: rgba(0, 243, 255, 0.05);
+            transform: translateX(5px);
+        }
+
+        .core-selector.active {
+            background: rgba(0, 243, 255, 0.1);
+            border-color: var(--arc-reactor);
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.1);
+        }
+
+        .core-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .core-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(0, 243, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: var(--arc-reactor);
+        }
+
+        .core-details {
+            flex: 1;
+        }
+
+        .core-name {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: white;
+            font-size: 0.95rem;
+        }
+
+        .core-status {
+            font-size: 0.8rem;
+            padding: 3px 10px;
+            border-radius: 10px;
+            display: inline-block;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+        }
+
+        .status-online {
+            background: rgba(0, 255, 136, 0.2);
+            color: var(--hud-green);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+        }
+
+        .status-offline {
+            background: rgba(255, 0, 60, 0.2);
+            color: var(--iron-red);
+            border: 1px solid rgba(255, 0, 60, 0.3);
+        }
+
+        .status-warning {
+            background: rgba(255, 170, 0, 0.2);
+            color: var(--hud-orange);
+            border: 1px solid rgba(255, 170, 0, 0.3);
+        }
+
+        /* API Key Input Section */
+        .api-keys-section {
+            margin: 30px 0;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            border: 1px solid rgba(0, 243, 255, 0.1);
+        }
+
+        .api-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            color: var(--arc-reactor);
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .api-input-group {
+            margin-bottom: 15px;
+        }
+
+        .api-label {
+            display: block;
+            font-family: 'Exo 2', sans-serif;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+
+        .api-input-wrapper {
+            position: relative;
+        }
+
+        .api-input {
+            width: 100%;
+            padding: 12px 40px 12px 15px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(0, 243, 255, 0.2);
+            border-radius: 8px;
+            color: white;
+            font-family: 'Exo 2', monospace;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .api-input:focus {
+            outline: none;
+            border-color: var(--arc-reactor);
+            box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
+        }
+
+        .api-toggle {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            color: var(--arc-reactor);
+            cursor: pointer;
+            padding: 5px;
+            font-size: 0.9rem;
+        }
+
+        .save-keys-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--arc-reactor), var(--suit-blue));
+            border: none;
+            border-radius: 10px;
+            color: var(--dark-bg);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            letter-spacing: 2px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .save-keys-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 243, 255, 0.3);
+        }
+
+        .save-keys-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .btn-glow {
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            animation: slide 2s infinite;
+        }
+
+        @keyframes slide {
+            from { left: -100%; }
+            to { left: 100%; }
+        }
+
+        /* Image Generation Options */
+        .image-options {
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            border: 1px solid rgba(0, 243, 255, 0.1);
+        }
+
+        .image-options-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            color: var(--arc-reactor);
+            margin-bottom: 15px;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .image-mode-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .mode-btn {
+            padding: 12px;
+            background: rgba(0, 243, 255, 0.05);
+            border: 1px solid rgba(0, 243, 255, 0.2);
+            border-radius: 8px;
+            color: white;
+            font-family: 'Exo 2', sans-serif;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            text-align: center;
+        }
+
+        .mode-btn:hover {
+            background: rgba(0, 243, 255, 0.1);
+        }
+
+        .mode-btn.active {
+            background: rgba(0, 243, 255, 0.15);
+            border-color: var(--arc-reactor);
+            color: var(--arc-reactor);
+        }
+
+        .mode-btn i {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        .image-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            border: 1px solid rgba(0, 243, 255, 0.1);
+        }
+
+        .stat-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            color: var(--arc-reactor);
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Quick Commands */
+        .quick-commands {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .quick-command {
+            padding: 12px;
+            background: rgba(0, 243, 255, 0.05);
+            border: 1px solid rgba(0, 243, 255, 0.2);
+            border-radius: 8px;
+            color: white;
+            font-family: 'Exo 2', sans-serif;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .quick-command:hover {
+            background: rgba(0, 243, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* ====== PROJECTS Section ====== */
+        .projects-section {
+            padding: 20px;
+        }
+
+        .projects-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .projects-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3.5rem;
+            color: var(--arc-reactor);
+            margin-bottom: 15px;
+            letter-spacing: 4px;
+            text-shadow: var(--neon-glow);
+        }
+
+        .projects-subtitle {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.8);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .project-card {
+            background: var(--panel-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            position: relative;
+            animation: cardAppear 0.5s ease-out forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .project-card:nth-child(1) { animation-delay: 0.1s; }
+        .project-card:nth-child(2) { animation-delay: 0.2s; }
+        .project-card:nth-child(3) { animation-delay: 0.3s; }
+        .project-card:nth-child(4) { animation-delay: 0.4s; }
+        .project-card:nth-child(5) { animation-delay: 0.5s; }
+        .project-card:nth-child(6) { animation-delay: 0.6s; }
+
+        @keyframes cardAppear {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .project-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 243, 255, 0.1);
+            border-color: var(--arc-reactor);
+        }
+
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--iron-red), var(--iron-gold), var(--arc-reactor));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .project-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .project-image {
+            height: 200px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .project-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .project-card:hover .project-image img {
+            transform: scale(1.1);
+        }
+
+        .project-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, transparent, rgba(10, 14, 30, 0.9));
+            display: flex;
+            align-items: flex-end;
+            padding: 20px;
+        }
+
+        .project-tags {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .project-tag {
+            padding: 5px 15px;
+            background: rgba(0, 243, 255, 0.1);
+            border: 1px solid rgba(0, 243, 255, 0.3);
+            border-radius: 15px;
+            font-size: 0.8rem;
+            color: var(--arc-reactor);
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+        }
+
+        .project-content {
+            padding: 25px;
+        }
+
+        .project-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            color: var(--arc-reactor);
+            margin-bottom: 15px;
+            letter-spacing: 2px;
+        }
+
+        .project-description {
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+        }
+
+        .project-tech {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tech-item {
+            padding: 5px 15px;
+            background: rgba(255, 0, 60, 0.1);
+            border: 1px solid rgba(255, 0, 60, 0.3);
+            border-radius: 15px;
+            font-size: 0.8rem;
+            color: var(--iron-red);
+            font-family: 'Exo 2', sans-serif;
+        }
+
+        .project-links {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .project-link {
+            padding: 10px 20px;
+            background: rgba(0, 243, 255, 0.1);
+            border: 1px solid rgba(0, 243, 255, 0.3);
+            border-radius: 8px;
+            color: white;
+            text-decoration: none;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .project-link:hover {
+            background: rgba(0, 243, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .project-link.live {
+            background: linear-gradient(135deg, var(--arc-reactor), var(--suit-blue));
+            color: var(--dark-bg);
+            font-weight: 600;
+        }
+
+        /* ====== GALLERY Section ====== */
+        .gallery-section {
+            padding: 20px;
+        }
+
+        .gallery-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .gallery-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3.5rem;
+            color: var(--arc-reactor);
+            margin-bottom: 15px;
+            letter-spacing: 4px;
+            text-shadow: var(--neon-glow);
+        }
+
+        .gallery-controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .gallery-filter {
+            padding: 10px 25px;
+            background: rgba(0, 243, 255, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 30px;
+            color: white;
+            font-family: 'Exo 2', sans-serif;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .gallery-filter:hover {
+            background: rgba(0, 243, 255, 0.1);
+        }
+
+        .gallery-filter.active {
+            background: rgba(0, 243, 255, 0.15);
+            border-color: var(--arc-reactor);
+            color: var(--arc-reactor);
+        }
+
+        .gallery-upload {
+            padding: 10px 25px;
+            background: linear-gradient(135deg, var(--arc-reactor), var(--suit-blue));
+            border: none;
+            border-radius: 30px;
+            color: var(--dark-bg);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+
+        .gallery-upload:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 243, 255, 0.3);
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .gallery-item {
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            height: 300px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            animation: cardAppear 0.5s ease-out forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 243, 255, 0.2);
+        }
+
+        .gallery-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .gallery-item:hover .gallery-image {
+            transform: scale(1.1);
+        }
+
+        .gallery-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, transparent, rgba(10, 14, 30, 0.9));
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .gallery-item:hover .gallery-overlay {
+            opacity: 1;
+        }
+
+        .gallery-caption {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.1rem;
+            color: var(--arc-reactor);
+            margin-bottom: 5px;
+        }
+
+        .gallery-date {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* ====== SYSTEMS Section ====== */
+        .systems-section {
+            padding: 20px;
+        }
+
+        .systems-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .systems-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3.5rem;
+            color: var(--arc-reactor);
+            margin-bottom: 15px;
+            letter-spacing: 4px;
+            text-shadow: var(--neon-glow);
+        }
+
+        .systems-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+        }
+
+        .system-card {
+            background: var(--panel-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            padding: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .system-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--arc-reactor);
+            box-shadow: 0 15px 30px rgba(0, 243, 255, 0.1);
+        }
+
+        .system-icon {
+            font-size: 3rem;
+            color: var(--arc-reactor);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .system-name {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            color: var(--arc-reactor);
+            margin-bottom: 15px;
+            letter-spacing: 2px;
+            text-align: center;
+        }
+
+        .system-description {
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .system-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .system-btn {
+            padding: 10px 20px;
+            background: rgba(0, 243, 255, 0.1);
+            border: 1px solid rgba(0, 243, 255, 0.3);
+            border-radius: 8px;
+            color: white;
+            font-family: 'Exo 2', sans-serif;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .system-btn:hover {
+            background: rgba(0, 243, 255, 0.2);
+        }
+
+        /* ====== System Status Footer ====== */
+        .system-status {
+            margin-top: 60px;
+            padding: 30px;
+            background: var(--panel-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .status-grid-footer {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+        }
+
+        .status-item-footer {
+            text-align: center;
+        }
+
+        .status-icon {
+            font-size: 2rem;
+            color: var(--arc-reactor);
+            margin-bottom: 15px;
+        }
+
+        .status-label-footer {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        .status-value-footer {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--arc-reactor);
+            text-shadow: var(--text-glow);
+        }
+
+        .pulse-indicator {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .pulse-dot {
+            width: 12px;
+            height: 12px;
+            background: var(--hud-green);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+
+        .pulse-text {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            color: var(--hud-green);
+            letter-spacing: 2px;
+        }
+
+        /* ====== Modal for Image View ====== */
+        .image-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            animation: modalFade 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .image-modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            max-width: 90%;
+            max-height: 90%;
+            position: relative;
+            background: var(--panel-bg);
+            border-radius: 15px;
+            overflow: hidden;
+            border: 2px solid var(--arc-reactor);
+            box-shadow: var(--neon-glow);
+        }
+
+        .modal-image {
+            max-width: 100%;
+            max-height: 80vh;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .modal-info {
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border-top: 1px solid var(--border-color);
+        }
+
+        .modal-caption {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.3rem;
+            color: var(--arc-reactor);
+            margin-bottom: 10px;
+        }
+
+        .modal-meta {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .modal-action {
+            padding: 8px 16px;
+            background: rgba(0, 243, 255, 0.1);
+            border: 1px solid rgba(0, 243, 255, 0.3);
+            border-radius: 6px;
+            color: white;
+            text-decoration: none;
+            font-family: 'Exo 2', sans-serif;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .modal-action:hover {
+            background: rgba(0, 243, 255, 0.2);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 40px;
+            height: 40px;
+            background: var(--iron-red);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 1001;
+        }
+
+        .modal-close:hover {
+            background: var(--arc-reactor);
+            transform: rotate(90deg);
+        }
+
+        @keyframes modalFade {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* ====== Responsive Design ====== */
+        @media (max-width: 1200px) {
+            .assistant-interface {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto auto auto;
+            }
+            
+            .projects-grid, .systems-grid {
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            }
+            
+            .status-grid-footer {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .jarvis-title {
+                font-size: 3rem;
+                letter-spacing: 4px;
+            }
+            
+            .nav-hud {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .nav-button {
+                min-width: auto;
+                justify-content: center;
+            }
+            
+            .input-wrapper {
+                flex-direction: column;
+            }
+            
+            .input-buttons {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+            
+            .projects-grid,
+            .gallery-grid,
+            .systems-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .projects-title,
+            .gallery-title,
+            .systems-title {
+                font-size: 2.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .jarvis-title {
+                font-size: 2.5rem;
+            }
+            
+            .arc-reactor-container {
+                width: 150px;
+                height: 150px;
+            }
+            
+            .arc-reactor {
+                width: 80px;
+                height: 80px;
+            }
+            
+            .status-grid-footer {
+                grid-template-columns: 1fr;
+            }
+            
+            .system-controls {
+                flex-direction: column;
+            }
+        }
+
+        /* ====== Custom Scrollbar ====== */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--arc-reactor);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--suit-blue);
+        }
+
+        /* ====== Selection Styling ====== */
+        ::selection {
+            background: rgba(0, 243, 255, 0.3);
+            color: white;
+        }
+
+        /* ====== Loading Animation ====== */
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--dark-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+
+        .loading-content {
+            text-align: center;
+        }
+
+        .loading-arc {
+            width: 100px;
+            height: 100px;
+            border: 3px solid transparent;
+            border-top: 3px solid var(--arc-reactor);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 30px;
+        }
+
+        .loading-text {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            color: var(--arc-reactor);
+            letter-spacing: 3px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading" id="loading-screen">
+        <div class="loading-content">
+            <div class="loading-arc"></div>
+            <div class="loading-text">INITIALIZING J.A.R.V.I.S.</div>
+        </div>
+    </div>
+
+    <!-- Nanotech Grid Background -->
+    <div class="nanotech-grid"></div>
+    
+    <!-- Energy Fields -->
+    <div class="energy-field field-1"></div>
+    <div class="energy-field field-2"></div>
+    <div class="energy-field field-3"></div>
+    
+    <!-- Laser Grid -->
+    <div class="laser-grid"></div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- ARC Reactor Header -->
+        <header class="arc-header">
+            <div class="arc-reactor-container">
+                <div class="arc-reactor"></div>
+                <div class="arc-ring arc-ring-1"></div>
+                <div class="arc-ring arc-ring-2"></div>
+                <div class="arc-ring arc-ring-3"></div>
+                <div class="arc-particles" id="arc-particles"></div>
+            </div>
+            
+            <h1 class="jarvis-title">J.A.R.V.I.S.</h1>
+            <h2 class="jarvis-subtitle">Just A Rather Very Intelligent System</h2>
+            <div class="mark-version">MARK XLVII</div>
+        </header>
+
+        <!-- Navigation HUD -->
+        <nav class="nav-hud">
+            <button class="nav-button active" data-section="assistant">
+                <i class="fas fa-robot"></i>
+                <span>AI ASSISTANT</span>
+            </button>
+            <button class="nav-button" data-section="projects">
+                <i class="fas fa-code"></i>
+                <span>PROJECTS</span>
+            </button>
+            <button class="nav-button" data-section="gallery">
+                <i class="fas fa-images"></i>
+                <span>GALLERY</span>
+            </button>
+            <button class="nav-button" data-section="systems">
+                <i class="fas fa-cogs"></i>
+                <span>SYSTEMS</span>
+            </button>
+        </nav>
+
+        <!-- AI ASSISTANT Section -->
+        <section id="assistant" class="interface-section active">
+            <div class="assistant-interface">
+                <!-- Left Panel - Suit Status -->
+                <div class="suit-status">
+                    <h3 class="suit-title">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>IRON MAN SUIT STATUS</span>
+                    </h3>
+                    
+                    <div class="status-grid">
+                        <div class="status-item">
+                            <div class="status-header">
+                                <span class="status-label">ARC REACTOR</span>
+                                <span class="status-value" id="arc-reactor-value">98%</span>
+                            </div>
+                            <div class="status-bar">
+                                <div class="status-fill" style="width: 98%" data-status="arcReactor"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="status-item">
+                            <div class="status-header">
+                                <span class="status-label">ARMOR INTEGRITY</span>
+                                <span class="status-value" id="armor-integrity-value">100%</span>
+                            </div>
+                            <div class="status-bar">
+                                <div class="status-fill" style="width: 100%" data-status="armorIntegrity"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="status-item">
+                            <div class="status-header">
+                                <span class="status-label">WEAPONS SYSTEM</span>
+                                <span class="status-value" id="weapons-system-value">85%</span>
+                            </div>
+                            <div class="status-bar">
+                                <div class="status-fill" style="width: 85%" data-status="weaponsSystem"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="status-item">
+                            <div class="status-header">
+                                <span class="status-label">FLIGHT SYSTEMS</span>
+                                <span class="status-value" id="flight-systems-value">92%</span>
+                            </div>
+                            <div class="status-bar">
+                                <div class="status-fill" style="width: 92%" data-status="flightSystems"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="status-item">
+                            <div class="status-header">
+                                <span class="status-label">AI CONNECTION</span>
+                                <span class="status-value" id="ai-connection-value">100%</span>
+                            </div>
+                            <div class="status-bar">
+                                <div class="status-fill" style="width: 100%" data-status="aiConnection"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="status-item">
+                            <div class="status-header">
+                                <span class="status-label">NEURAL LINK</span>
+                                <span class="status-value" id="neural-link-value">96%</span>
+                            </div>
+                            <div class="status-bar">
+                                <div class="status-fill" style="width: 96%" data-status="neuralLink"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Center Panel - Chat Interface -->
+                <div class="chat-interface">
+                    <div class="chat-header">
+                        <h3 class="chat-title">
+                            <i class="fas fa-comments"></i>
+                            <span>AI ASSISTANT INTERFACE</span>
+                        </h3>
+                    </div>
+                    
+                    <div class="chat-display" id="chat-display">
+                        <div class="message jarvis">
+                            <div class="message-content">
+                                <div class="message-header">
+                                    <div class="message-avatar">J</div>
+                                    <div class="message-sender">J.A.R.V.I.S.</div>
+                                    <div class="message-time">SYSTEM</div>
+                                </div>
+                                <div class="message-text">
+                                    Good morning, Sir. All systems operational. Suit diagnostics complete. Ready for deployment or analysis.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="chat-input">
+                        <div class="input-wrapper">
+                            <input type="text" 
+                                   id="message-input" 
+                                   placeholder="ENTER COMMAND OR QUERY..."
+                                   autocomplete="off">
+                            <div class="input-buttons">
+                                <button class="input-btn send" id="send-btn">
+                                    <i class="fas fa-paper-plane"></i>
+                                    <span>SEND</span>
+                                </button>
+                                <button class="input-btn voice" id="voice-btn">
+                                    <i class="fas fa-microphone"></i>
+                                    <span>VOICE</span>
+                                </button>
+                                <button class="input-btn image" id="image-btn">
+                                    <i class="fas fa-image"></i>
+                                    <span>IMAGE</span>
+                                </button>
+                                <button class="input-btn" id="clear-btn">
+                                    <i class="fas fa-trash"></i>
+                                    <span>CLEAR</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Panel - AI Controls with API Keys -->
+                <div class="ai-controls">
+                    <h3 class="controls-title">
+                        <i class="fas fa-network-wired"></i>
+                        <span>AI CORE NETWORK</span>
+                    </h3>
+                    
+                    <div class="ai-cores">
+                        <div class="core-selector active" data-core="jarvis">
+                            <div class="core-info">
+                                <div class="core-icon">
+                                    <i class="fas fa-brain"></i>
+                                </div>
+                                <div class="core-details">
+                                    <div class="core-name">J.A.R.V.I.S. CORE</div>
+                                    <div class="core-status status-online">ONLINE</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="core-selector" data-core="openai">
+                            <div class="core-info">
+                                <div class="core-icon">
+                                    <i class="fab fa-openai"></i>
+                                </div>
+                                <div class="core-details">
+                                    <div class="core-name">OPENAI GPT-4</div>
+                                    <div class="core-status status-warning">API KEY NEEDED</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="core-selector" data-core="gemini">
+                            <div class="core-info">
+                                <div class="core-icon">
+                                    <i class="fab fa-google"></i>
+                                </div>
+                                <div class="core-details">
+                                    <div class="core-name">GEMINI PRO</div>
+                                    <div class="core-status status-warning">API KEY NEEDED</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="core-selector" data-core="claude">
+                            <div class="core-info">
+                                <div class="core-icon">
+                                    <i class="fas fa-robot"></i>
+                                </div>
+                                <div class="core-details">
+                                    <div class="core-name">CLAUDE AI</div>
+                                    <div class="core-status status-offline">OFFLINE</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- API Keys Section -->
+                    <div class="api-keys-section">
+                        <h4 class="api-title">
+                            <i class="fas fa-key"></i>
+                            <span>API CONFIGURATION</span>
+                        </h4>
+                        
+                        <div class="api-input-group">
+                            <label class="api-label">OPENAI API KEY</label>
+                            <div class="api-input-wrapper">
+                                <input type="password" 
+                                       class="api-input" 
+                                       id="openai-key"
+                                       placeholder="sk-...">
+                                <button class="api-toggle" data-target="openai-key">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="api-input-group">
+                            <label class="api-label">GEMINI API KEY</label>
+                            <div class="api-input-wrapper">
+                                <input type="password" 
+                                       class="api-input" 
+                                       id="gemini-key"
+                                       placeholder="AIza...">
+                                <button class="api-toggle" data-target="gemini-key">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="api-input-group">
+                            <label class="api-label">STABILITY AI KEY</label>
+                            <div class="api-input-wrapper">
+                                <input type="password" 
+                                       class="api-input" 
+                                       id="stability-key"
+                                       placeholder="sk-...">
+                                <button class="api-toggle" data-target="stability-key">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="api-input-group">
+                            <label class="api-label">FREEPIK API KEY</label>
+                            <div class="api-input-wrapper">
+                                <input type="password" 
+                                       class="api-input" 
+                                       id="freepik-key"
+                                       placeholder="FP...">
+                                <button class="api-toggle" data-target="freepik-key">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <button class="save-keys-btn" id="save-keys-btn">
+                            <i class="fas fa-save"></i>
+                            <span>SAVE API KEYS</span>
+                            <div class="btn-glow"></div>
+                        </button>
+                    </div>
+                    
+                    <!-- Image Generation Options -->
+                    <div class="image-options">
+                        <h4 class="image-options-title">
+                            <i class="fas fa-image"></i>
+                            <span>IMAGE GENERATION</span>
+                        </h4>
+                        
+                        <div class="image-mode-selector">
+                            <button class="mode-btn active" data-mode="generate">
+                                <i class="fas fa-robot"></i>
+                                <span>AI GENERATE</span>
+                            </button>
+                            <button class="mode-btn" data-mode="search">
+                                <i class="fas fa-search"></i>
+                                <span>STOCK SEARCH</span>
+                            </button>
+                        </div>
+                        
+                        <div class="image-stats">
+                            <div class="stat-item">
+                                <div class="stat-value" id="daily-credits">100</div>
+                                <div class="stat-label">DAILY CREDITS</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="images-generated">0</div>
+                                <div class="stat-label">IMAGES GENERATED</div>
+                            </div>
+                        </div>
+                        
+                        <div class="quick-commands">
+                            <button class="quick-command" data-command="generate-tech">
+                                <i class="fas fa-microchip"></i>
+                                <span>TECH IMAGE</span>
+                            </button>
+                            <button class="quick-command" data-command="generate-armor">
+                                <i class="fas fa-shield-alt"></i>
+                                <span>ARMOR DESIGN</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PROJECTS Section -->
+        <section id="projects" class="interface-section">
+            <div class="projects-section">
+                <div class="projects-header">
+                    <h2 class="projects-title">PROJECT PORTFOLIO</h2>
+                    <p class="projects-subtitle">
+                        Advanced technological projects and innovations. Each project represents cutting-edge 
+                        development in AI, robotics, nanotechnology, and energy systems.
+                    </p>
+                </div>
+                
+                <div class="projects-grid" id="projects-grid">
+                    <!-- Projects will be loaded here dynamically -->
+                </div>
+            </div>
+        </section>
+
+        <!-- GALLERY Section -->
+        <section id="gallery" class="interface-section">
+            <div class="gallery-section">
+                <div class="gallery-header">
+                    <h2 class="gallery-title">TECHNOLOGY GALLERY</h2>
+                    <p class="projects-subtitle">
+                        Visual documentation of technological innovations, prototypes, and completed systems.
+                    </p>
+                </div>
+                
+                <div class="gallery-controls">
+                    <button class="gallery-filter active" data-filter="all">ALL</button>
+                    <button class="gallery-filter" data-filter="suit">IRON SUITS</button>
+                    <button class="gallery-filter" data-filter="ai">AI SYSTEMS</button>
+                    <button class="gallery-filter" data-filter="tech">TECHNOLOGY</button>
+                    <button class="gallery-upload" id="upload-btn">
+                        <i class="fas fa-upload"></i>
+                        <span>UPLOAD IMAGE</span>
+                    </button>
+                </div>
+                
+                <div class="gallery-grid" id="gallery-grid">
+                    <!-- Gallery items will be loaded here dynamically -->
+                </div>
+            </div>
+        </section>
+
+        <!-- SYSTEMS Section -->
+        <section id="systems" class="interface-section">
+            <div class="systems-section">
+                <div class="systems-header">
+                    <h2 class="systems-title">SYSTEMS CONTROL</h2>
+                    <p class="projects-subtitle">
+                        Advanced system monitoring and control interface for all integrated technologies.
+                    </p>
+                </div>
+                
+                <div class="systems-grid">
+                    <div class="system-card">
+                        <div class="system-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <h3 class="system-name">AI NEURAL NETWORK</h3>
+                        <p class="system-description">
+                            Advanced neural network system for pattern recognition, decision making, and predictive analysis.
+                        </p>
+                        <div class="system-controls">
+                            <button class="system-btn" data-action="train">
+                                <i class="fas fa-brain"></i>
+                                <span>TRAIN</span>
+                            </button>
+                            <button class="system-btn" data-action="optimize">
+                                <i class="fas fa-tachometer-alt"></i>
+                                <span>OPTIMIZE</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="system-card">
+                        <div class="system-icon">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <h3 class="system-name">POWER SYSTEMS</h3>
+                        <p class="system-description">
+                            ARC Reactor energy management and distribution systems for optimal power allocation.
+                        </p>
+                        <div class="system-controls">
+                            <button class="system-btn" data-action="boost">
+                                <i class="fas fa-rocket"></i>
+                                <span>BOOST</span>
+                            </button>
+                            <button class="system-btn" data-action="calibrate">
+                                <i class="fas fa-cogs"></i>
+                                <span>CALIBRATE</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="system-card">
+                        <div class="system-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h3 class="system-name">DEFENSE SYSTEMS</h3>
+                        <p class="system-description">
+                            Energy shielding and armor integrity monitoring with automated threat response protocols.
+                        </p>
+                        <div class="system-controls">
+                            <button class="system-btn" data-action="shield">
+                                <i class="fas fa-shield-virus"></i>
+                                <span>SHIELD UP</span>
+                            </button>
+                            <button class="system-btn" data-action="scan">
+                                <i class="fas fa-radar"></i>
+                                <span>THREAT SCAN</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="system-card">
+                        <div class="system-icon">
+                            <i class="fas fa-satellite"></i>
+                        </div>
+                        <h3 class="system-name">COMMUNICATIONS</h3>
+                        <p class="system-description">
+                            Global satellite network and secure communication systems with quantum encryption.
+                        </p>
+                        <div class="system-controls">
+                            <button class="system-btn" data-action="connect">
+                                <i class="fas fa-satellite-dish"></i>
+                                <span>CONNECT</span>
+                            </button>
+                            <button class="system-btn" data-action="encrypt">
+                                <i class="fas fa-lock"></i>
+                                <span>ENCRYPT</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- System Status Footer -->
+        <footer class="system-status">
+            <div class="status-grid-footer">
+                <div class="status-item-footer">
+                    <div class="status-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <div class="status-label-footer">POWER OUTPUT</div>
+                    <div class="status-value-footer" id="power-output">8.7 GW</div>
+                </div>
+                
+                <div class="status-item-footer">
+                    <div class="status-icon">
+                        <i class="fas fa-tachometer-alt"></i>
+                    </div>
+                    <div class="status-label-footer">SYSTEM LOAD</div>
+                    <div class="status-value-footer" id="system-load">64%</div>
+                </div>
+                
+                <div class="status-item-footer">
+                    <div class="status-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="status-label-footer">ARMOR STATUS</div>
+                    <div class="status-value-footer" id="armor-status">100%</div>
+                </div>
+                
+                <div class="status-item-footer">
+                    <div class="status-icon">
+                        <i class="fas fa-satellite"></i>
+                    </div>
+                    <div class="status-label-footer">UPTIME</div>
+                    <div class="status-value-footer" id="uptime">00:00:00</div>
+                </div>
+            </div>
+            
+            <div class="pulse-indicator">
+                <div class="pulse-dot"></div>
+                <div class="pulse-text">ALL SYSTEMS NOMINAL</div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Image Modal -->
+    <div class="image-modal" id="image-modal">
+        <div class="modal-content">
+            <button class="modal-close" id="modal-close">
+                <i class="fas fa-times"></i>
+            </button>
+            <img class="modal-image" id="modal-image" src="" alt="">
+            <div class="modal-info">
+                <div class="modal-caption" id="modal-caption"></div>
+                <div class="modal-meta" id="modal-meta"></div>
+                <div class="modal-actions">
+                    <a href="#" class="modal-action" id="modal-download">
+                        <i class="fas fa-download"></i>
+                        <span>DOWNLOAD</span>
+                    </a>
+                    <a href="#" class="modal-action" id="modal-share">
+                        <i class="fas fa-share"></i>
+                        <span>SHARE</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden File Input for Upload -->
+    <input type="file" id="file-upload" accept="image/*" style="display: none;">
+
+    <script>
+        // J.A.R.V.I.S. MARK XLVII - Complete System
+        class JarvisSystem {
+            constructor() {
+                this.startTime = new Date();
+                this.messageHistory = [];
+                this.projects = [];
+                this.galleryItems = [];
+                this.currentSection = 'assistant';
+                this.isListening = false;
+                this.voiceRecognition = null;
+                this.arcParticles = [];
+                this.imageMode = 'generate';
+                this.apiKeys = {
+                    openai: '',
+                    gemini: '',
+                    stability: '',
+                    freepik: ''
+                };
+                this.systemStatus = {
+                    arcReactor: 98,
+                    armorIntegrity: 100,
+                    weaponsSystem: 85,
+                    flightSystems: 92,
+                    aiConnection: 100,
+                    neuralLink: 96,
+                    powerOutput: 8.7,
+                    systemLoad: 64
+                };
+                this.imageStats = {
+                    dailyCredits: 100,
+                    imagesGenerated: 0,
+                    imagesUsed: 0
+                };
+                
+                this.init();
+            }
+
+            async init() {
+                this.createArcParticles();
+                this.loadInitialData();
+                this.loadSavedData();
+                this.setupEventListeners();
+                this.initVoiceRecognition();
+                this.startSystemAnimations();
+                this.startUptimeCounter();
+                
+                await this.simulateBootSequence();
+                
+                setTimeout(() => {
+                    document.getElementById('loading-screen').style.opacity = '0';
+                    setTimeout(() => {
+                        document.getElementById('loading-screen').style.display = 'none';
+                    }, 500);
+                    
+                    this.showNotification('J.A.R.V.I.S. System Initialized', 'success');
+                    this.addMessage('jarvis', 'All systems operational. Ready for commands, Sir.', true);
+                }, 2000);
+            }
+
+            createArcParticles() {
+                const container = document.getElementById('arc-particles');
+                if (!container) return;
+                
+                for (let i = 0; i < 12; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'arc-particle';
+                    particle.style.cssText = `
+                        position: absolute;
+                        width: 4px;
+                        height: 4px;
+                        background: var(--arc-reactor);
+                        border-radius: 50%;
+                        top: 50%;
+                        left: 50%;
+                        box-shadow: 0 0 10px var(--arc-reactor);
+                        animation: arcOrbit ${3 + i * 0.5}s linear infinite;
+                        animation-delay: ${i * 0.25}s;
+                    `;
+                    
+                    container.appendChild(particle);
+                    this.arcParticles.push(particle);
+                }
+            }
+
+            async simulateBootSequence() {
+                const bootMessages = [
+                    'INITIALIZING NANOTECH SYSTEMS...',
+                    'LOADING AI CORE NEURAL NETWORK...',
+                    'CALIBRATING ARC REACTOR...',
+                    'SYNCHRONIZING WEAPONS SYSTEMS...',
+                    'INITIALIZING FLIGHT CONTROLS...',
+                    'ESTABLISHING SATELLITE LINK...',
+                    'J.A.R.V.I.S. SYSTEMS ONLINE...'
+                ];
+                
+                for (let i = 0; i < bootMessages.length; i++) {
+                    await new Promise(resolve => setTimeout(resolve, 300));
+                    console.log(`%c${bootMessages[i]}`, 'color: #00f3ff; font-weight: bold;');
+                }
+            }
+
+            loadInitialData() {
+                // Sample projects data
+                this.projects = [
+                    {
+                        id: 1,
+                        title: "MARK XLVII SUIT",
+                        image: "https://images.unsplash.com/photo-1581094794329-c8112a89af12?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                        description: "Advanced nanotechnology suit with integrated AI, flight systems, and repulsor technology. Features energy-dispersive armor and AI-assisted combat systems.",
+                        tags: ["AI", "Nanotech", "Flight", "Combat"],
+                        tech: ["React", "Node.js", "MongoDB", "TensorFlow", "Three.js"],
+                        links: [
+                            { type: "demo", url: "#", label: "Live Demo", icon: "fas fa-external-link-alt" },
+                            { type: "github", url: "#", label: "GitHub", icon: "fab fa-github" },
+                            { type: "docs", url: "#", label: "Documentation", icon: "fas fa-book" }
+                        ]
+                    },
+                    {
+                        id: 2,
+                        title: "ARC REACTOR 2.0",
+                        image: "https://images.unsplash.com/photo-1532094349884-543bc11b234d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                        description: "Clean energy generation system based on palladium core technology. Provides sustainable power for entire cities with zero emissions.",
+                        tags: ["Energy", "Innovation", "Green Tech", "Power"],
+                        tech: ["Python", "TensorFlow", "React", "D3.js", "WebGL"],
+                        links: [
+                            { type: "demo", url: "#", label: "Live Demo", icon: "fas fa-external-link-alt" },
+                            { type: "github", url: "#", label: "GitHub", icon: "fab fa-github" },
+                            { type: "paper", url: "#", label: "Research Paper", icon: "fas fa-file-alt" }
+                        ]
+                    },
+                    {
+                        id: 3,
+                        title: "HOLOGRAPHIC INTERFACE",
+                        image: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                        description: "Advanced holographic projection system for interactive data visualization and control interfaces using photon manipulation technology.",
+                        tags: ["UI/UX", "Holographics", "VR", "Visualization"],
+                        tech: ["Three.js", "WebGL", "React", "WebRTC", "WebAudio"],
+                        links: [
+                            { type: "demo", url: "#", label: "Live Demo", icon: "fas fa-external-link-alt" },
+                            { type: "github", url: "#", label: "GitHub", icon: "fab fa-github" },
+                            { type: "video", url: "#", label: "Demo Video", icon: "fas fa-video" }
+                        ]
+                    }
+                ];
+
+                this.galleryItems = [
+                    {
+                        id: 1,
+                        image: "https://images.unsplash.com/photo-1581094794329-c8112a89af12?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+                        caption: "MARK XLVII Prototype Assembly",
+                        date: "2024-01-15",
+                        category: "suit",
+                        tags: ["suit", "prototype", "assembly"]
+                    },
+                    {
+                        id: 2,
+                        image: "https://images.unsplash.com/photo-1532094349884-543bc11b234d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+                        caption: "ARC Reactor Core Testing",
+                        date: "2024-01-20",
+                        category: "tech",
+                        tags: ["energy", "reactor", "core"]
+                    },
+                    {
+                        id: 3,
+                        image: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+                        caption: "Holographic Interface Prototype",
+                        date: "2024-01-25",
+                        category: "tech",
+                        tags: ["interface", "holographic", "prototype"]
+                    },
+                    {
+                        id: 4,
+                        image: "https://images.unsplash.com/photo-1563089145-599997674d42?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+                        caption: "AI Neural Network Training",
+                        date: "2024-02-01",
+                        category: "ai",
+                        tags: ["ai", "neural", "training"]
+                    },
+                    {
+                        id: 5,
+                        image: "https://images.unsplash.com/photo-1518709268805-4e9042af2176?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+                        caption: "Flight Systems Calibration",
+                        date: "2024-02-05",
+                        category: "tech",
+                        tags: ["flight", "systems", "calibration"]
+                    },
+                    {
+                        id: 6,
+                        image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+                        caption: "Weapons System Integration",
+                        date: "2024-02-10",
+                        category: "suit",
+                        tags: ["weapons", "systems", "integration"]
+                    }
+                ];
+
+                this.renderProjects();
+                this.renderGallery();
+                this.updateImageStats();
+            }
+
+            loadSavedData() {
+                // Load API keys from localStorage
+                const savedKeys = localStorage.getItem('jarvis-api-keys');
+                if (savedKeys) {
+                    try {
+                        this.apiKeys = JSON.parse(savedKeys);
+                        this.updateAPIInputs();
+                    } catch (e) {
+                        console.error('Failed to load API keys:', e);
+                    }
+                }
+                
+                // Load image stats
+                const savedStats = localStorage.getItem('jarvis-image-stats');
+                if (savedStats) {
+                    try {
+                        this.imageStats = JSON.parse(savedStats);
+                        this.updateImageStats();
+                    } catch (e) {
+                        console.error('Failed to load image stats:', e);
+                    }
+                }
+            }
+
+            saveData() {
+                // Save API keys
+                localStorage.setItem('jarvis-api-keys', JSON.stringify(this.apiKeys));
+                
+                // Save image stats
+                localStorage.setItem('jarvis-image-stats', JSON.stringify(this.imageStats));
+            }
+
+            updateAPIInputs() {
+                Object.keys(this.apiKeys).forEach(key => {
+                    const input = document.getElementById(`${key}-key`);
+                    if (input) {
+                        input.value = this.apiKeys[key];
+                    }
+                });
+            }
+
+            updateImageStats() {
+                document.getElementById('daily-credits').textContent = this.imageStats.dailyCredits;
+                document.getElementById('images-generated').textContent = this.imageStats.imagesGenerated;
+            }
+
+            renderProjects() {
+                const grid = document.getElementById('projects-grid');
+                if (!grid) return;
+                
+                grid.innerHTML = this.projects.map(project => `
+                    <div class="project-card" data-project-id="${project.id}">
+                        <div class="project-image">
+                            <img src="${project.image}" alt="${project.title}" loading="lazy">
+                            <div class="project-overlay">
+                                <div class="project-tags">
+                                    ${project.tags.map(tag => `<span class="project-tag">${tag}</span>`).join('')}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="project-content">
+                            <h3 class="project-title">${project.title}</h3>
+                            <p class="project-description">${project.description}</p>
+                            <div class="project-tech">
+                                ${project.tech.map(tech => `<span class="tech-item">${tech}</span>`).join('')}
+                            </div>
+                            <div class="project-links">
+                                ${project.links.map(link => `
+                                    <a href="${link.url}" class="project-link ${link.type}" target="_blank" rel="noopener">
+                                        <i class="${link.icon}"></i>
+                                        <span>${link.label}</span>
+                                    </a>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            renderGallery(filter = 'all') {
+                const grid = document.getElementById('gallery-grid');
+                if (!grid) return;
+                
+                const filteredItems = filter === 'all' 
+                    ? this.galleryItems 
+                    : this.galleryItems.filter(item => item.category === filter);
+                
+                grid.innerHTML = filteredItems.map((item, index) => `
+                    <div class="gallery-item" 
+                         data-image="${item.image}" 
+                         data-caption="${item.caption}"
+                         data-date="${item.date}"
+                         data-category="${item.category}"
+                         style="animation-delay: ${index * 0.1}s">
+                        <img src="${item.image}" alt="${item.caption}" class="gallery-image" loading="lazy">
+                        <div class="gallery-overlay">
+                            <div class="gallery-caption">${item.caption}</div>
+                            <div class="gallery-date">${item.date}</div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            setupEventListeners() {
+                // Navigation
+                document.querySelectorAll('.nav-button').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        const section = e.currentTarget.dataset.section;
+                        this.switchSection(section);
+                    });
+                });
+
+                // Chat functionality
+                const sendBtn = document.getElementById('send-btn');
+                const messageInput = document.getElementById('message-input');
+                
+                if (sendBtn) sendBtn.addEventListener('click', () => this.sendMessage());
+                if (messageInput) {
+                    messageInput.addEventListener('keypress', (e) => {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                            e.preventDefault();
+                            this.sendMessage();
+                        }
+                    });
+                }
+
+                // Clear chat
+                const clearBtn = document.getElementById('clear-btn');
+                if (clearBtn) clearBtn.addEventListener('click', () => this.clearChat());
+
+                // Voice button
+                const voiceBtn = document.getElementById('voice-btn');
+                if (voiceBtn) voiceBtn.addEventListener('click', () => this.toggleVoice());
+
+                // Image button
+                const imageBtn = document.getElementById('image-btn');
+                if (imageBtn) imageBtn.addEventListener('click', () => this.handleImageCommand());
+
+                // Save API keys
+                const saveKeysBtn = document.getElementById('save-keys-btn');
+                if (saveKeysBtn) {
+                    saveKeysBtn.addEventListener('click', () => this.saveAPIKeys());
+                }
+
+                // API key visibility toggle
+                document.querySelectorAll('.api-toggle').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const targetId = e.currentTarget.dataset.target;
+                        const input = document.getElementById(targetId);
+                        if (input) {
+                            if (input.type === 'password') {
+                                input.type = 'text';
+                                e.currentTarget.innerHTML = '<i class="fas fa-eye-slash"></i>';
+                            } else {
+                                input.type = 'password';
+                                e.currentTarget.innerHTML = '<i class="fas fa-eye"></i>';
+                            }
+                        }
+                    });
+                });
+
+                // AI core selection
+                document.querySelectorAll('.core-selector').forEach(core => {
+                    core.addEventListener('click', (e) => {
+                        document.querySelectorAll('.core-selector').forEach(c => c.classList.remove('active'));
+                        e.currentTarget.classList.add('active');
+                        const coreName = e.currentTarget.dataset.core;
+                        this.switchAICore(coreName);
+                    });
+                });
+
+                // Image mode selection
+                document.querySelectorAll('.mode-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+                        e.currentTarget.classList.add('active');
+                        this.imageMode = e.currentTarget.dataset.mode;
+                        this.showNotification(`Image mode: ${this.imageMode === 'generate' ? 'AI Generation' : 'Stock Search'}`, 'info');
+                    });
+                });
+
+                // Quick commands for images
+                document.querySelectorAll('.quick-command').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const command = e.currentTarget.dataset.command;
+                        this.handleQuickImageCommand(command);
+                    });
+                });
+
+                // Gallery filter
+                document.querySelectorAll('.gallery-filter').forEach(filter => {
+                    filter.addEventListener('click', (e) => {
+                        document.querySelectorAll('.gallery-filter').forEach(f => f.classList.remove('active'));
+                        e.currentTarget.classList.add('active');
+                        const filterType = e.currentTarget.dataset.filter;
+                        this.renderGallery(filterType);
+                    });
+                });
+
+                // Gallery upload
+                const uploadBtn = document.getElementById('upload-btn');
+                const fileUpload = document.getElementById('file-upload');
+                
+                if (uploadBtn && fileUpload) {
+                    uploadBtn.addEventListener('click', () => fileUpload.click());
+                    fileUpload.addEventListener('change', (e) => this.handleImageUpload(e));
+                }
+
+                // Gallery image click
+                document.addEventListener('click', (e) => {
+                    const galleryItem = e.target.closest('.gallery-item');
+                    if (galleryItem) {
+                        this.openImageModal(
+                            galleryItem.dataset.image,
+                            galleryItem.dataset.caption,
+                            galleryItem.dataset.date,
+                            galleryItem.dataset.category
+                        );
+                    }
+                });
+
+                // Modal close
+                const modalClose = document.getElementById('modal-close');
+                if (modalClose) {
+                    modalClose.addEventListener('click', () => {
+                        this.closeImageModal();
+                    });
+                }
+
+                // System controls
+                document.querySelectorAll('.system-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const action = e.currentTarget.dataset.action;
+                        this.handleSystemAction(action);
+                    });
+                });
+
+                // Close modal with Escape key
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') {
+                        this.closeImageModal();
+                    }
+                    
+                    // Shortcuts
+                    if (e.ctrlKey && e.key === 'k') {
+                        e.preventDefault();
+                        messageInput?.focus();
+                    }
+                    
+                    if (e.ctrlKey && e.key === 'l') {
+                        e.preventDefault();
+                        this.clearChat();
+                    }
+                    
+                    if (e.ctrlKey && e.key === 'i') {
+                        e.preventDefault();
+                        this.handleImageCommand();
+                    }
+                });
+
+                // Update status bars
+                this.updateStatusBars();
+            }
+
+            initVoiceRecognition() {
+                if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                    this.voiceRecognition = new SpeechRecognition();
+                    this.voiceRecognition.continuous = false;
+                    this.voiceRecognition.interimResults = false;
+                    this.voiceRecognition.lang = 'en-US';
+                    this.voiceRecognition.maxAlternatives = 1;
+
+                    this.voiceRecognition.onstart = () => {
+                        this.showNotification('Voice recognition activated', 'info');
+                        this.addMessage('jarvis', 'Voice interface active. Listening...', true);
+                        this.startVoiceVisualization();
+                    };
+
+                    this.voiceRecognition.onresult = (event) => {
+                        const transcript = event.results[0][0].transcript;
+                        const messageInput = document.getElementById('message-input');
+                        if (messageInput) {
+                            messageInput.value = transcript;
+                        }
+                        this.showNotification('Command captured: ' + transcript, 'success');
+                        
+                        // Auto-process certain commands
+                        if (transcript.toLowerCase().includes('generate image') || 
+                            transcript.toLowerCase().includes('create image')) {
+                            this.handleImageCommand();
+                        } else if (transcript.length < 100) {
+                            setTimeout(() => this.sendMessage(), 500);
+                        }
+                    };
+
+                    this.voiceRecognition.onerror = (event) => {
+                        console.error('Voice recognition error:', event.error);
+                        this.showNotification('Voice error: ' + event.error, 'error');
+                    };
+
+                    this.voiceRecognition.onend = () => {
+                        this.isListening = false;
+                        this.stopVoiceVisualization();
+                        const voiceBtn = document.getElementById('voice-btn');
+                        if (voiceBtn) {
+                            voiceBtn.innerHTML = '<i class="fas fa-microphone"></i><span>VOICE</span>';
+                        }
+                    };
+                } else {
+                    const voiceBtn = document.getElementById('voice-btn');
+                    if (voiceBtn) {
+                        voiceBtn.style.display = 'none';
+                    }
+                    this.showNotification('Voice recognition not supported in this browser', 'warning');
+                }
+            }
+
+            startVoiceVisualization() {
+                const visualizer = document.createElement('div');
+                visualizer.id = 'voice-visualizer';
+                visualizer.style.cssText = `
+                    position: fixed;
+                    bottom: 20px;
+                    right: 20px;
+                    width: 100px;
+                    height: 100px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 3px;
+                    z-index: 1000;
+                    background: rgba(0, 0, 0, 0.5);
+                    border-radius: 10px;
+                    padding: 10px;
+                    backdrop-filter: blur(5px);
+                    border: 1px solid var(--arc-reactor);
+                `;
+                
+                for (let i = 0; i < 8; i++) {
+                    const bar = document.createElement('div');
+                    bar.style.cssText = `
+                        width: 5px;
+                        height: 20px;
+                        background: var(--arc-reactor);
+                        border-radius: 3px;
+                        animation: voiceBar ${0.5 + Math.random() * 0.5}s ease-in-out infinite alternate;
+                        animation-delay: ${i * 0.1}s;
+                    `;
+                    visualizer.appendChild(bar);
+                }
+                
+                document.body.appendChild(visualizer);
+            }
+
+            stopVoiceVisualization() {
+                const visualizer = document.getElementById('voice-visualizer');
+                if (visualizer) {
+                    visualizer.remove();
+                }
+            }
+
+            toggleVoice() {
+                if (!this.voiceRecognition) {
+                    this.showNotification('Voice system unavailable', 'error');
+                    return;
+                }
+
+                if (this.isListening) {
+                    this.voiceRecognition.stop();
+                    this.isListening = false;
+                } else {
+                    this.voiceRecognition.start();
+                    this.isListening = true;
+                }
+            }
+
+            switchSection(section) {
+                // Update navigation
+                document.querySelectorAll('.nav-button').forEach(btn => {
+                    btn.classList.remove('active');
+                    if (btn.dataset.section === section) {
+                        btn.classList.add('active');
+                    }
+                });
+                
+                // Hide all sections
+                document.querySelectorAll('.interface-section').forEach(sec => {
+                    sec.classList.remove('active');
+                });
+                
+                // Show selected section
+                const targetSection = document.getElementById(section);
+                if (targetSection) {
+                    targetSection.classList.add('active');
+                    this.currentSection = section;
+                    
+                    // Special section handling
+                    if (section === 'assistant') {
+                        this.updateStatusBars();
+                    }
+                    
+                    this.showNotification(`Switched to ${section.toUpperCase()} mode`, 'info');
+                }
+            }
+
+            switchAICore(coreName) {
+                const cores = {
+                    jarvis: 'J.A.R.V.I.S. CORE - Primary AI System',
+                    openai: 'OPENAI GPT-4 - Advanced Language Model',
+                    gemini: 'GEMINI PRO - Google AI System',
+                    claude: 'CLAUDE AI - Anthropic System'
+                };
+                
+                if (coreName !== 'jarvis' && !this.apiKeys[coreName]) {
+                    this.showNotification(`API key required for ${coreName.toUpperCase()}`, 'warning');
+                    return;
+                }
+                
+                this.showNotification(`Switched to ${cores[coreName]}`, 'info');
+                this.addMessage('jarvis', `AI Core switched to ${coreName.toUpperCase()}`, true);
+                
+                // Update system status
+                this.systemStatus.aiConnection = coreName === 'jarvis' ? 100 : 95;
+                this.updateStatusBars();
+            }
+
+            saveAPIKeys() {
+                this.apiKeys = {
+                    openai: document.getElementById('openai-key').value.trim(),
+                    gemini: document.getElementById('gemini-key').value.trim(),
+                    stability: document.getElementById('stability-key').value.trim(),
+                    freepik: document.getElementById('freepik-key').value.trim()
+                };
+                
+                this.saveData();
+                this.showNotification('API keys saved securely', 'success');
+                
+                // Update core statuses
+                this.updateCoreStatuses();
+            }
+
+            updateCoreStatuses() {
+                document.querySelectorAll('.core-selector').forEach(core => {
+                    const coreName = core.dataset.core;
+                    const statusElement = core.querySelector('.core-status');
+                    
+                    if (coreName === 'jarvis') {
+                        statusElement.textContent = 'ONLINE';
+                        statusElement.className = 'core-status status-online';
+                    } else if (this.apiKeys[coreName]) {
+                        statusElement.textContent = 'ONLINE';
+                        statusElement.className = 'core-status status-online';
+                    } else {
+                        statusElement.textContent = 'API KEY NEEDED';
+                        statusElement.className = 'core-status status-warning';
+                    }
+                });
+            }
+
+            async sendMessage() {
+                const messageInput = document.getElementById('message-input');
+                if (!messageInput) return;
+                
+                const message = messageInput.value.trim();
+                if (!message) {
+                    this.showNotification('Please enter a message', 'warning');
+                    return;
+                }
+                
+                // Add user message
+                this.addMessage('user', message);
+                messageInput.value = '';
+                
+                // Show typing indicator
+                const thinkingId = this.addMessage('jarvis', 'Processing...', true);
+                
+                // Update system status
+                this.systemStatus.systemLoad = Math.min(100, this.systemStatus.systemLoad + 15);
+                this.updateStatusBars();
+                
+                try {
+                    // Get AI response
+                    const response = await this.getAIResponse(message);
+                    
+                    // Update message
+                    this.updateMessage(thinkingId, response);
+                    
+                    // Update system status
+                    this.systemStatus.systemLoad = Math.max(30, this.systemStatus.systemLoad - 10);
+                    this.updateStatusBars();
+                    
+                    this.showNotification('Response generated', 'success');
+                    
+                } catch (error) {
+                    console.error('AI Error:', error);
+                    this.updateMessage(thinkingId, `System error: ${error.message}`);
+                    this.showNotification('AI response failed', 'error');
+                }
+            }
+
+            async getAIResponse(prompt) {
+                // Simulate API delay
+                await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 1000));
+                
+                const responses = {
+                    greeting: [
+                        "Good to hear from you, Sir. All systems are functioning at optimal levels.",
+                        "J.A.R.V.I.S. here. Ready to assist with any technological challenges.",
+                        "Greetings. The suit is prepped and ready for deployment if needed."
+                    ],
+                    status: [
+                        "Running full diagnostic... All systems nominal. Power levels stable.",
+                        "Status check complete: Armor integrity at 100%, weapons systems armed.",
+                        "System analysis shows optimal performance across all parameters."
+                    ],
+                    image: [
+                        "Accessing image generation protocols. Please specify the type of image you'd like to create.",
+                        "Image generation system ready. You can describe what you want to create.",
+                        "Ready to generate images. Use the image button or type 'generate image' followed by your description."
+                    ],
+                    default: [
+                        "Processing your query... Analysis suggests optimal course of action.",
+                        "Command acknowledged. Running necessary computations.",
+                        "Accessing database... Information compiled and ready for review."
+                    ]
+                };
+                
+                const lowerPrompt = prompt.toLowerCase();
+                let responseSet = responses.default;
+                
+                if (lowerPrompt.includes('hello') || lowerPrompt.includes('hi') || lowerPrompt.includes('hey')) {
+                    responseSet = responses.greeting;
+                } else if (lowerPrompt.includes('status') || lowerPrompt.includes('diagnostic')) {
+                    responseSet = responses.status;
+                } else if (lowerPrompt.includes('image') || lowerPrompt.includes('generate') || lowerPrompt.includes('picture')) {
+                    responseSet = responses.image;
+                }
+                
+                return responseSet[Math.floor(Math.random() * responseSet.length)];
+            }
+
+            handleImageCommand() {
+                const messageInput = document.getElementById('message-input');
+                const prompt = messageInput ? messageInput.value.trim() : '';
+                
+                if (this.imageMode === 'generate') {
+                    this.generateImage(prompt);
+                } else {
+                    this.searchImages(prompt);
+                }
+                
+                if (messageInput) {
+                    messageInput.value = '';
+                }
+            }
+
+            async generateImage(prompt) {
+                if (this.imageStats.dailyCredits <= 0) {
+                    this.showNotification('Daily credits exhausted. Please try again tomorrow.', 'error');
+                    return;
+                }
+                
+                if (!prompt) {
+                    prompt = "futuristic technology, holographic interface, neon lights, cyberpunk style";
+                }
+                
+                this.showNotification('Generating image...', 'info');
+                this.addMessage('jarvis', `Generating image: "${prompt}"`, true);
+                
+                // Simulate image generation
+                setTimeout(() => {
+                    this.imageStats.dailyCredits--;
+                    this.imageStats.imagesGenerated++;
+                    this.updateImageStats();
+                    this.saveData();
+                    
+                    const imageUrl = `https://picsum.photos/600/400?random=${Date.now()}&grayscale`;
+                    
+                    // Add image to gallery
+                    const newImage = {
+                        id: this.galleryItems.length + 1,
+                        image: imageUrl,
+                        caption: `AI Generated: ${prompt.substring(0, 50)}...`,
+                        date: new Date().toISOString().split('T')[0],
+                        category: 'ai',
+                        tags: ['ai', 'generated', 'artificial']
+                    };
+                    
+                    this.galleryItems.unshift(newImage);
+                    this.renderGallery('all');
+                    
+                    this.showNotification('Image generated successfully', 'success');
+                    this.addMessage('jarvis', `Image generated and added to gallery. ${this.imageStats.dailyCredits} credits remaining.`);
+                    
+                }, 3000);
+            }
+
+            async searchImages(query) {
+                if (!query) {
+                    query = "technology";
+                }
+                
+                this.showNotification('Searching for images...', 'info');
+                this.addMessage('jarvis', `Searching for: "${query}"`, true);
+                
+                // Simulate API search
+                setTimeout(() => {
+                    const results = [
+                        {
+                            id: Date.now() + 1,
+                            image: `https://picsum.photos/600/400?random=${Date.now() + 1}`,
+                            caption: `Search result: ${query}`,
+                            date: new Date().toISOString().split('T')[0],
+                            category: 'tech'
+                        },
+                        {
+                            id: Date.now() + 2,
+                            image: `https://picsum.photos/600/400?random=${Date.now() + 2}`,
+                            caption: `Related: ${query} technology`,
+                            date: new Date().toISOString().split('T')[0],
+                            category: 'tech'
+                        }
+                    ];
+                    
+                    results.forEach(result => {
+                        this.galleryItems.unshift(result);
+                    });
+                    
+                    this.renderGallery('all');
+                    this.showNotification(`${results.length} images found`, 'success');
+                    this.addMessage('jarvis', `Found ${results.length} images matching your search.`);
+                    
+                }, 2000);
+            }
+
+            handleQuickImageCommand(command) {
+                const prompts = {
+                    'generate-tech': "advanced technology, circuit boards, holographic displays, futuristic lab, glowing blue lights",
+                    'generate-armor': "iron man armor, advanced technology, repulsor glow, sleek design, battle ready, detailed"
+                };
+                
+                if (prompts[command]) {
+                    const messageInput = document.getElementById('message-input');
+                    if (messageInput) {
+                        messageInput.value = prompts[command];
+                    }
+                    this.generateImage(prompts[command]);
+                }
+            }
+
+            handleImageUpload(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+                
+                if (!file.type.match('image.*')) {
+                    this.showNotification('Please select an image file', 'error');
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const imageUrl = e.target.result;
+                    
+                    const newImage = {
+                        id: this.galleryItems.length + 1,
+                        image: imageUrl,
+                        caption: `Uploaded: ${file.name}`,
+                        date: new Date().toISOString().split('T')[0],
+                        category: 'upload',
+                        tags: ['uploaded', 'custom']
+                    };
+                    
+                    this.galleryItems.unshift(newImage);
+                    this.renderGallery('all');
+                    this.showNotification('Image uploaded successfully', 'success');
+                    this.addMessage('jarvis', 'Image uploaded to gallery.');
+                };
+                
+                reader.readAsDataURL(file);
+                event.target.value = ''; // Reset file input
+            }
+
+            addMessage(sender, text, isTyping = false) {
+                const chatDisplay = document.getElementById('chat-display');
+                if (!chatDisplay) return `msg-${Date.now()}`;
+                
+                const messageId = `msg-${Date.now()}`;
+                const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${sender}`;
+                messageDiv.id = messageId;
+                
+                messageDiv.innerHTML = `
+                    <div class="message-content">
+                        <div class="message-header">
+                            <div class="message-avatar">${sender === 'jarvis' ? 'J' : 'S'}</div>
+                            <div class="message-sender">${sender === 'jarvis' ? 'J.A.R.V.I.S.' : 'YOU'}</div>
+                            <div class="message-time">${time}</div>
+                        </div>
+                        <div class="message-text">
+                            ${isTyping ? '<span class="typing-indicator">' + text + '</span>' : this.formatMessage(text)}
+                        </div>
+                    </div>
+                `;
+                
+                chatDisplay.appendChild(messageDiv);
+                chatDisplay.scrollTop = chatDisplay.scrollHeight;
+                
+                // Add to history
+                this.messageHistory.push({
+                    id: messageId,
+                    sender,
+                    text,
+                    time: new Date(),
+                    isTyping
+                });
+                
+                return messageId;
+            }
+
+            updateMessage(messageId, text) {
+                const messageDiv = document.getElementById(messageId);
+                if (messageDiv) {
+                    const textDiv = messageDiv.querySelector('.message-text');
+                    if (textDiv) {
+                        textDiv.innerHTML = this.formatMessage(text);
+                    }
+                    
+                    // Update history
+                    const messageIndex = this.messageHistory.findIndex(m => m.id === messageId);
+                    if (messageIndex !== -1) {
+                        this.messageHistory[messageIndex].text = text;
+                        this.messageHistory[messageIndex].isTyping = false;
+                    }
+                }
+            }
+
+            formatMessage(text) {
+                return text
+                    .replace(/\*\*(.*?)\*\*/g, '<strong class="highlight">$1</strong>')
+                    .replace(/\n/g, '<br>')
+                    .replace(/`([^`]+)`/g, '<code>$1</code>');
+            }
+
+            clearChat() {
+                if (this.messageHistory.length === 0) return;
+                
+                if (confirm('Clear all communication logs?')) {
+                    const chatDisplay = document.getElementById('chat-display');
+                    if (chatDisplay) {
+                        chatDisplay.innerHTML = `
+                            <div class="message jarvis">
+                                <div class="message-content">
+                                    <div class="message-header">
+                                        <div class="message-avatar">J</div>
+                                        <div class="message-sender">J.A.R.V.I.S.</div>
+                                        <div class="message-time">SYSTEM</div>
+                                    </div>
+                                    <div class="message-text">
+                                        Communication log cleared. Ready for commands, Sir.
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        this.messageHistory = [];
+                        this.showNotification('Communication log cleared', 'success');
+                    }
+                }
+            }
+
+            openImageModal(imageUrl, caption, date, category) {
+                const modal = document.getElementById('image-modal');
+                const modalImage = document.getElementById('modal-image');
+                const modalCaption = document.getElementById('modal-caption');
+                const modalMeta = document.getElementById('modal-meta');
+                const modalDownload = document.getElementById('modal-download');
+                
+                if (modal && modalImage && modalCaption && modalMeta && modalDownload) {
+                    modalImage.src = imageUrl;
+                    modalImage.alt = caption;
+                    modalCaption.textContent = caption;
+                    modalMeta.textContent = `${date} • ${category.toUpperCase()}`;
+                    modalDownload.href = imageUrl;
+                    modalDownload.download = `jarvis-${caption.toLowerCase().replace(/\s+/g, '-')}.jpg`;
+                    
+                    modal.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                }
+            }
+
+            closeImageModal() {
+                const modal = document.getElementById('image-modal');
+                if (modal) {
+                    modal.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            }
+
+            handleSystemAction(action) {
+                const actions = {
+                    train: "Initiating neural network training protocol...",
+                    optimize: "Optimizing system performance parameters...",
+                    boost: "Boosting power output to maximum levels...",
+                    calibrate: "Calibrating systems for optimal performance...",
+                    shield: "Activating energy shielding...",
+                    scan: "Initiating threat scan protocol...",
+                    connect: "Establishing secure satellite connection...",
+                    encrypt: "Activating quantum encryption protocols..."
+                };
+                
+                if (actions[action]) {
+                    this.showNotification(`System action: ${action.toUpperCase()}`, 'info');
+                    this.addMessage('jarvis', actions[action], true);
+                    
+                    // Update system status based on action
+                    setTimeout(() => {
+                        if (action === 'optimize' || action === 'calibrate') {
+                            this.systemStatus.systemLoad = 45;
+                            this.systemStatus.powerOutput = 9.2;
+                        } else if (action === 'boost') {
+                            this.systemStatus.powerOutput = 10.5;
+                        } else if (action === 'shield') {
+                            this.systemStatus.armorIntegrity = 100;
+                        }
+                        
+                        this.updateStatusBars();
+                        this.addMessage('jarvis', 'Action completed successfully.');
+                    }, 2000);
+                }
+            }
+
+            showNotification(message, type = 'info') {
+                // Create notification element
+                const notification = document.createElement('div');
+                notification.className = `notification ${type}`;
+                notification.textContent = message;
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    padding: 15px 25px;
+                    background: rgba(10, 14, 30, 0.95);
+                    border: 1px solid rgba(0, 243, 255, 0.3);
+                    border-left: 4px solid ${this.getNotificationColor(type)};
+                    border-radius: 8px;
+                    color: white;
+                    font-family: 'Orbitron', sans-serif;
+                    letter-spacing: 1px;
+                    z-index: 1000;
+                    animation: notificationSlideIn 0.3s ease;
+                    backdrop-filter: blur(10px);
+                    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+                `;
+                
+                document.body.appendChild(notification);
+                
+                // Remove after 3 seconds
+                setTimeout(() => {
+                    notification.style.animation = 'notificationut 0.3s ease';
+                    setTimeout(() => {
+                        if (notification.parentNode) {
+                            notification.remove();
+                        }
+                    }, 300);
+                }, 3000);
+            }
+
+            getNotificationColor(type) {
+                const colors = {
+                    success: 'var(--arc-reactor)',
+                    error: 'var(--iron-red)',
+                    warning: 'var(--hud-orange)',
+                    info: 'var(--suit-blue)'
+                };
+                return colors[type] || colors.info;
+            }
+
+            updateStatusBars() {
+                // Update status bars
+                Object.keys(this.systemStatus).forEach(key => {
+                    const valueElement = document.getElementById(`${key.replace(/([A-Z])/g, '-$1').toLowerCase()}-value`);
+                    const barElement = document.querySelector(`[data-status="${key}"]`);
+                    
+                    if (valueElement) {
+                        if (key === 'powerOutput') {
+                            valueElement.textContent = `${this.systemStatus[key].toFixed(1)} GW`;
+                        } else {
+                            valueElement.textContent = `${Math.round(this.systemStatus[key])}%`;
+                        }
+                    }
+                    
+                    if (barElement) {
+                        barElement.style.width = `${this.systemStatus[key]}%`;
+                    }
+                });
+                
+                // Update footer values
+                document.getElementById('power-output').textContent = `${this.systemStatus.powerOutput.toFixed(1)} GW`;
+                document.getElementById('system-load').textContent = `${Math.round(this.systemStatus.systemLoad)}%`;
+                document.getElementById('armor-status').textContent = `${Math.round(this.systemStatus.armorIntegrity)}%`;
+            }
+
+            startSystemAnimations() {
+                // Create floating particles
+                this.createFloatingParticles();
+                
+                // Animate project cards on hover
+                this.animateProjectCards();
+                
+                // Update system status periodically
+                setInterval(() => {
+                    // Random fluctuations in system status
+                    this.systemStatus.arcReactor = Math.max(95, Math.min(100, 
+                        this.systemStatus.arcReactor + (Math.random() - 0.5)));
+                    this.systemStatus.powerOutput = (8.5 + Math.random() * 0.4).toFixed(1);
+                    this.systemStatus.systemLoad = Math.max(60, Math.min(70, 
+                        this.systemStatus.systemLoad + (Math.random() - 0.5)));
+                    
+                    this.updateStatusBars();
+                }, 3000);
+            }
+
+            createFloatingParticles() {
+                const container = document.querySelector('.nanotech-grid');
+                if (!container) return;
+                
+                for (let i = 0; i < 30; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'floating-particle';
+                    particle.style.cssText = `
+                        position: absolute;
+                        width: ${1 + Math.random() * 2}px;
+                        height: ${1 + Math.random() * 2}px;
+                        background: var(--arc-reactor);
+                        border-radius: 50%;
+                        top: ${Math.random() * 100}%;
+                        left: ${Math.random() * 100}%;
+                        opacity: ${0.1 + Math.random() * 0.2};
+                        animation: float ${10 + Math.random() * 20}s linear infinite;
+                    `;
+                    
+                    container.appendChild(particle);
+                }
+            }
+
+            animateProjectCards() {
+                const cards = document.querySelectorAll('.project-card');
+                cards.forEach((card, index) => {
+                    card.style.animationDelay = `${index * 0.1}s`;
+                });
+            }
+
+            startUptimeCounter() {
+                setInterval(() => {
+                    const now = new Date();
+                    const diff = now - this.startTime;
+                    const hours = Math.floor(diff / 3600000);
+                    const minutes = Math.floor((diff % 3600000) / 60000);
+                    const seconds = Math.floor((diff % 60000) / 1000);
+                    
+                    const uptimeElement = document.getElementById('uptime');
+                    if (uptimeElement) {
+                        uptimeElement.textContent = 
+                            `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                    }
+                }, 1000);
+            }
+        }
+
+        // Initialize J.A.R.V.I.S.
+        document.addEventListener('DOMContentLoaded', () => {
+            // Add global CSS for animations
+            const globalStyles = `
+                @keyframes notificationSlideIn {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+                
+                @keyframes notificationSlideOut {
+                    from { transform: translateX(0); opacity: 1; }
+                    to { transform: translateX(100%); opacity: 0; }
+                }
+                
+                @keyframes float {
+                    0% {
+                        transform: translate(0, 0);
+                        opacity: 0.1;
+                    }
+                    50% {
+                        transform: translate(${Math.random() * 100 - 50}px, ${Math.random() * 100 - 50}px);
+                        opacity: 0.3;
+                    }
+                    100% {
+                        transform: translate(0, 0);
+                        opacity: 0.1;
+                    }
+                }
+                
+                .highlight {
+                    color: var(--arc-reactor);
+                    font-weight: bold;
+                }
+                
+                code {
+                    background: rgba(0, 243, 255, 0.1);
+                    padding: 2px 6px;
+                    border-radius: 4px;
+                    font-family: 'Courier New', monospace;
+                    border: 1px solid rgba(0, 243, 255, 0.3);
+                }
+                
+                @keyframes voiceBar {
+                    0% { height: 10px; opacity: 0.3; }
+                    100% { height: 50px; opacity: 1; }
+                }
+            `;
+            
+            const styleSheet = document.createElement('style');
+            styleSheet.textContent = globalStyles;
+            document.head.appendChild(styleSheet);
+            
+            // Initialize J.A.R.V.I.S. system
+            window.jarvis = new JarvisSystem();
+            
+            // Add global keyboard shortcuts
+            document.addEventListener('keydown', (e) => {
+                // Ctrl + Shift + S: Save API keys
+                if (e.ctrlKey && e.shiftKey && e.key === 'S') {
+                    e.preventDefault();
+                    window.jarvis.saveAPIKeys();
+                }
+                
+                // Ctrl + Shift + I: Image generation
+                if (e.ctrlKey && e.shiftKey && e.key === 'I') {
+                    e.preventDefault();
+                    window.jarvis.handleImageCommand();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
