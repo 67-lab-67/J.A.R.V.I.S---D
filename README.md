@@ -32,3 +32,7 @@ JARVIS MARK 85C
 
 https://mark-k17-d.netlify.app/
 JARVIS MARK 17D
+
+https://version-k17-d.netlify.app/
+JARVIS MARK 17 VERSION 17.2-D (LATEST VERSION)
+
