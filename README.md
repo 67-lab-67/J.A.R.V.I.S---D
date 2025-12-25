@@ -1,4 +1,4 @@
-# J.A.R.V.I.S---D
+# J.A.R.V.I.S by k17
 AN AI MADE BY AN AI.
 
 https://neon-chaja-927fc1.netlify.app/
