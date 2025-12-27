@@ -34,5 +34,7 @@ https://mark-k17-d.netlify.app/
 JARVIS MARK 17D
 
 https://version-k17-d.netlify.app/
-JARVIS MARK 17 VERSION 17.2-D (LATEST VERSION)
+JARVIS MARK 17 VERSION 17.2-D 
 
+https://k17-d4.netlify.app/
+JARVIS MARK 17 VERSION 4.0 (LATEST VERSION)
